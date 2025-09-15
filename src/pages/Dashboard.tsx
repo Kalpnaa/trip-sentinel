@@ -7,12 +7,13 @@ import { SOSButton } from "@/components/SOSButton";
 import { LocationStatus } from "@/components/LocationStatus";
 import { DigitalID } from "@/components/DigitalID";
 import { TripItinerary } from "@/components/TripItinerary";
+import { Settings } from "@/components/Settings";
 import { 
   Shield, 
   MapPin, 
   Calendar, 
   User, 
-  Settings, 
+  Settings as SettingsIcon, 
   AlertTriangle,
   Activity,
   Users,
@@ -78,9 +79,7 @@ export const Dashboard = () => {
             <h1 className="text-xl font-bold">Tourist Safety Monitor</h1>
             <p className="text-primary-foreground/80 text-sm">Stay safe, explore confidently</p>
           </div>
-          <Button variant="secondary" size="sm">
-            <Settings className="w-4 h-4" />
-          </Button>
+          <Settings />
         </div>
       </div>
 
