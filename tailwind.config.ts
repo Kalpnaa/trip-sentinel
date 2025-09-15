@@ -22,6 +22,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -47,6 +48,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        emergency: {
+          DEFAULT: "hsl(var(--emergency))",
+          foreground: "hsl(var(--emergency-foreground))",
+        },
+        "safe-zone": "hsl(var(--safe-zone))",
+        "warning-zone": "hsl(var(--warning-zone))",
+        "danger-zone": "hsl(var(--danger-zone))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
