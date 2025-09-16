@@ -103,12 +103,12 @@ export const Dashboard = ({ user }: { user?: any }) => {
             <Card className="p-3 text-center">
               <Users className="w-6 h-6 text-primary mx-auto mb-1" />
               <p className="text-xs text-muted-foreground">Group</p>
-              <p className="font-semibold text-sm">3 Members</p>
+              <p className="font-semibold text-sm">{user ? '1 Member' : 'No Group'}</p>
             </Card>
             <Card className="p-3 text-center">
               <Activity className="w-6 h-6 text-secondary mx-auto mb-1" />
               <p className="text-xs text-muted-foreground">Today</p>
-              <p className="font-semibold text-sm">4 Activities</p>
+              <p className="font-semibold text-sm">{itinerary.length} Activities</p>
             </Card>
           </div>
         </div>

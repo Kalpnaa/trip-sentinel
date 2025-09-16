@@ -21,26 +21,7 @@ interface TripItineraryProps {
 }
 
 export const TripItinerary = ({ onItineraryUpdate }: TripItineraryProps) => {
-  const [itinerary, setItinerary] = useState<ItineraryItem[]>([
-    {
-      id: "1",
-      day: 1,
-      time: "09:00",
-      location: "Times Square",
-      activity: "Sightseeing",
-      description: "Visit the iconic Times Square and take photos",
-      safety_notes: "Stay in well-lit areas, avoid street vendors"
-    },
-    {
-      id: "2", 
-      day: 1,
-      time: "14:00",
-      location: "Central Park",
-      activity: "Nature Walk",
-      description: "Relaxing walk through Central Park",
-      safety_notes: "Stay on main paths, travel in groups"
-    }
-  ]);
+  const [itinerary, setItinerary] = useState<ItineraryItem[]>([]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [newItem, setNewItem] = useState<Partial<ItineraryItem>>({
