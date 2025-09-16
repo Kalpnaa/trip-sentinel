@@ -95,7 +95,7 @@ export const Dashboard = ({ user }: { user?: any }) => {
             <h1 className="text-xl font-bold">Tourist Safety Monitor</h1>
             <p className="text-primary-foreground/80 text-sm">Stay safe, explore confidently</p>
           </div>
-          <Settings />
+          <Settings currentUser={user} />
         </div>
       </div>
 
