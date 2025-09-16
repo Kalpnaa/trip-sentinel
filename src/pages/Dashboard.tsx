@@ -40,15 +40,7 @@ interface ItineraryItem {
 export const Dashboard = ({ user }: { user?: any }) => {
   const [currentLocation, setCurrentLocation] = useState<LocationData | null>(null);
   const [itinerary, setItinerary] = useState<ItineraryItem[]>([]);
-  const [safetyAlerts, setSafetyAlerts] = useState([
-    {
-      id: "1",
-      type: "weather",
-      message: "Heavy rain expected in your area at 3 PM",
-      severity: "warning",
-      timestamp: new Date()
-    }
-  ]);
+  const [safetyAlerts, setSafetyAlerts] = useState([]);
 
   // Map logged-in user to DigitalID shape
   const userForID = user

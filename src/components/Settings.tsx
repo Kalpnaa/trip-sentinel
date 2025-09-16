@@ -138,10 +138,12 @@ export const Settings = ({ currentUser }: { currentUser?: { name?: string; email
             <Card className="p-4">
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">Logged in as:</p>
-                <p className="font-medium">{currentUser?.email || 'guest@example.com'}</p>
-                <Badge variant="outline" className="text-safe-zone border-safe-zone">
-                  Verified Tourist
-                </Badge>
+                <p className="font-medium">{currentUser?.email || 'No user logged in'}</p>
+                {currentUser?.email && (
+                  <Badge variant="outline" className="text-safe-zone border-safe-zone">
+                    Verified Tourist
+                  </Badge>
+                )}
               </div>
             </Card>
           </div>

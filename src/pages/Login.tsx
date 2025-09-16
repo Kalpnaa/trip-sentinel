@@ -55,20 +55,21 @@ export const Login = ({ onLogin }: LoginProps) => {
       // Load saved profile if it exists
       const key = `profile:${loginForm.email.toLowerCase()}`;
       const stored = localStorage.getItem(key);
-      const profile = stored ? JSON.parse(stored) : null;
+      
+      if (!stored) {
+        toast({
+          title: "No Profile Found",
+          description: "Please register first to create your profile.",
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+      }
 
-      const userPayload = profile || {
-        id: "user_123",
-        name: "Alex Johnson",
-        email: loginForm.email,
-        phone: "+1 234 567 8900",
-        nationality: "United States",
-      };
+      const profile = JSON.parse(stored);
+      localStorage.setItem("current-user", JSON.stringify(profile));
 
-      // Persist current session user
-      localStorage.setItem("current-user", JSON.stringify(userPayload));
-
-      onLogin(userPayload);
+      onLogin(profile);
       setIsLoading(false);
     }, 1500);
   };
