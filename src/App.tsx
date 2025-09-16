@@ -29,7 +29,7 @@ const App = () => {
         <BrowserRouter>
           {user ? (
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<Dashboard user={user} />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : (

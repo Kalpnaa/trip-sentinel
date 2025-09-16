@@ -34,7 +34,7 @@ const LANGUAGES = [
   { code: 'ar', name: 'العربية' }
 ];
 
-export const Settings = () => {
+export const Settings = ({ currentUser }: { currentUser?: { name?: string; email?: string } }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState<UserSettings>({
     language: 'en',
@@ -138,7 +138,7 @@ export const Settings = () => {
             <Card className="p-4">
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">Logged in as:</p>
-                <p className="font-medium">tourist@example.com</p>
+                <p className="font-medium">{currentUser?.email || 'guest@example.com'}</p>
                 <Badge variant="outline" className="text-safe-zone border-safe-zone">
                   Verified Tourist
                 </Badge>

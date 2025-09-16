@@ -51,16 +51,24 @@ export const Login = ({ onLogin }: LoginProps) => {
         title: "Login Successful",
         description: "Welcome back to Tourist Safety Monitor!",
       });
-      
-      // Mock user data
-      onLogin({
+
+      // Load saved profile if it exists
+      const key = `profile:${loginForm.email.toLowerCase()}`;
+      const stored = localStorage.getItem(key);
+      const profile = stored ? JSON.parse(stored) : null;
+
+      const userPayload = profile || {
         id: "user_123",
         name: "Alex Johnson",
         email: loginForm.email,
         phone: "+1 234 567 8900",
-        nationality: "United States"
-      });
-      
+        nationality: "United States",
+      };
+
+      // Persist current session user
+      localStorage.setItem("current-user", JSON.stringify(userPayload));
+
+      onLogin(userPayload);
       setIsLoading(false);
     }, 1500);
   };
@@ -90,16 +98,22 @@ export const Login = ({ onLogin }: LoginProps) => {
         title: "Registration Successful",
         description: "Your account has been created successfully!",
       });
-      
-      onLogin({
+
+      const userPayload = {
         id: "user_new",
         name: registerForm.name,
         email: registerForm.email,
         phone: registerForm.phone,
         nationality: registerForm.nationality,
-        emergencyContact: registerForm.emergencyContact
-      });
-      
+        emergencyContact: registerForm.emergencyContact,
+      };
+
+      // Persist profile and current session
+      const key = `profile:${registerForm.email.toLowerCase()}`;
+      localStorage.setItem(key, JSON.stringify(userPayload));
+      localStorage.setItem("current-user", JSON.stringify(userPayload));
+
+      onLogin(userPayload);
       setIsLoading(false);
     }, 2000);
   };

@@ -37,7 +37,7 @@ interface ItineraryItem {
   safety_notes?: string;
 }
 
-export const Dashboard = () => {
+export const Dashboard = ({ user }: { user?: any }) => {
   const [currentLocation, setCurrentLocation] = useState<LocationData | null>(null);
   const [itinerary, setItinerary] = useState<ItineraryItem[]>([]);
   const [safetyAlerts, setSafetyAlerts] = useState([
@@ -49,6 +49,22 @@ export const Dashboard = () => {
       timestamp: new Date()
     }
   ]);
+
+  // Map logged-in user to DigitalID shape
+  const userForID = user
+    ? {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        nationality: user.nationality,
+        avatar: user.avatar,
+        idNumber: user.idNumber || `TID-${user.id || "TEMP"}`,
+        issuedDate: user.issuedDate || new Date().toISOString(),
+        expiryDate:
+          user.expiryDate || new Date(Date.now() + 1000 * 60 * 60 * 24 * 365).toISOString(),
+        emergencyContact: user.emergencyContact,
+      }
+    : undefined;
 
   const handleLocationUpdate = (location: LocationData) => {
     setCurrentLocation(location);
@@ -165,7 +181,7 @@ export const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="id">
-            <DigitalID />
+            <DigitalID user={userForID} />
           </TabsContent>
 
           <TabsContent value="reports">
