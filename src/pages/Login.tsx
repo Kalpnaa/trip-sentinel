@@ -37,22 +37,24 @@ export const Login = ({ onLogin }: LoginProps) => {
     }
   });
 
+  // Phone number validation helper
+  const validatePhone = (phone: string) => {
+    const phonePattern = /^[0-9]{10}$/; // 10-digit numbers only
+    return phonePattern.test(phone);
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     // TODO: Implement actual authentication
-    // - Connect to Supabase Auth
-    // - Validate credentials
-    // - Handle 2FA if enabled
-    
+
     setTimeout(() => {
       toast({
         title: "Login Successful",
         description: "Welcome back to Tourist Safety Monitor!",
       });
 
-      // Load saved profile if it exists
       const key = `profile:${loginForm.email.toLowerCase()}`;
       const stored = localStorage.getItem(key);
       
@@ -68,7 +70,6 @@ export const Login = ({ onLogin }: LoginProps) => {
 
       const profile = JSON.parse(stored);
       localStorage.setItem("current-user", JSON.stringify(profile));
-
       onLogin(profile);
       setIsLoading(false);
     }, 1500);
@@ -76,7 +77,8 @@ export const Login = ({ onLogin }: LoginProps) => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // Password mismatch check
     if (registerForm.password !== registerForm.confirmPassword) {
       toast({
         title: "Password Mismatch",
@@ -86,14 +88,28 @@ export const Login = ({ onLogin }: LoginProps) => {
       return;
     }
 
+    // Validate user phone
+    if (!validatePhone(registerForm.phone)) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Please enter a valid 10-digit phone number for yourself.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate emergency contact phone
+    if (!validatePhone(registerForm.emergencyContact.phone)) {
+      toast({
+        title: "Invalid Emergency Contact Phone",
+        description: "Please enter a valid 10-digit phone number for your emergency contact.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsLoading(true);
 
-    // TODO: Implement actual registration
-    // - Create user in Supabase
-    // - Generate Digital ID on blockchain
-    // - Send verification email
-    // - Setup emergency contacts
-    
     setTimeout(() => {
       toast({
         title: "Registration Successful",
@@ -109,11 +125,9 @@ export const Login = ({ onLogin }: LoginProps) => {
         emergencyContact: registerForm.emergencyContact,
       };
 
-      // Persist profile and current session
       const key = `profile:${registerForm.email.toLowerCase()}`;
       localStorage.setItem(key, JSON.stringify(userPayload));
       localStorage.setItem("current-user", JSON.stringify(userPayload));
-
       onLogin(userPayload);
       setIsLoading(false);
     }, 2000);
@@ -175,11 +189,7 @@ export const Login = ({ onLogin }: LoginProps) => {
                       className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
-                      )}
+                      {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
                     </Button>
                   </div>
                 </div>
@@ -189,9 +199,7 @@ export const Login = ({ onLogin }: LoginProps) => {
                 </Button>
 
                 <div className="text-center">
-                  <Button variant="link" size="sm">
-                    Forgot password?
-                  </Button>
+                  <Button variant="link" size="sm">Forgot password?</Button>
                 </div>
               </form>
             </TabsContent>
@@ -254,7 +262,7 @@ export const Login = ({ onLogin }: LoginProps) => {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+1 234 567 8900"
+                      placeholder="1234567890"
                       className="pl-10"
                       value={registerForm.phone}
                       onChange={(e) => setRegisterForm({...registerForm, phone: e.target.value})}
