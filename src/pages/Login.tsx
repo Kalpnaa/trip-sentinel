@@ -67,15 +67,7 @@ export const Login = () => {
 
     setIsLoading(true);
 
-    const metadata = {
-      full_name: registerForm.name,
-      phone_number: registerForm.phone,
-      nationality: registerForm.nationality,
-      emergency_contact_name: registerForm.emergencyContact.name,
-      emergency_contact_phone: registerForm.emergencyContact.phone,
-    };
-
-    await signUp(registerForm.email, registerForm.password, metadata);
+    await signUp(registerForm.email, registerForm.password, registerForm.name);
     setIsLoading(false);
   };
 
