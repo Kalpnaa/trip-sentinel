@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,6 +8,8 @@ import { LocationStatus } from "@/components/LocationStatus";
 import { DigitalID } from "@/components/DigitalID";
 import { TripItinerary } from "@/components/TripItinerary";
 import { Settings } from "@/components/Settings";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, 
   MapPin, 
@@ -37,24 +39,62 @@ interface ItineraryItem {
   safety_notes?: string;
 }
 
-export const Dashboard = ({ user }: { user?: any }) => {
+export const Dashboard = () => {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<any>(null);
+  const [trips, setTrips] = useState<any[]>([]);
   const [currentLocation, setCurrentLocation] = useState<LocationData | null>(null);
   const [itinerary, setItinerary] = useState<ItineraryItem[]>([]);
   const [safetyAlerts, setSafetyAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Map logged-in user to DigitalID shape
-  const userForID = user
+  useEffect(() => {
+    if (user) {
+      fetchUserData();
+    }
+  }, [user]);
+
+  const fetchUserData = async () => {
+    try {
+      // Fetch user profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      // Fetch user trips
+      const { data: tripsData } = await supabase
+        .from('trips')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      setProfile(profileData);
+      setTrips(tripsData || []);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Map profile data to DigitalID shape
+  const userForID = profile
     ? {
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        nationality: user.nationality,
-        avatar: user.avatar,
-        idNumber: user.idNumber || `TID-${user.id || "TEMP"}`,
-        issuedDate: user.issuedDate || new Date().toISOString(),
-        expiryDate:
-          user.expiryDate || new Date(Date.now() + 1000 * 60 * 60 * 24 * 365).toISOString(),
-        emergencyContact: user.emergencyContact,
+        name: profile.full_name || user?.email,
+        email: user?.email,
+        phone: profile.phone_number,
+        nationality: profile.nationality,
+        avatar: profile.avatar_url,
+        idNumber: `TID-${user?.id?.substring(0, 8) || "TEMP"}`,
+        issuedDate: profile.created_at || new Date().toISOString(),
+        expiryDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365).toISOString(),
+        emergencyContact: {
+          name: profile.emergency_contact_name,
+          phone: profile.emergency_contact_phone,
+          relation: "Emergency Contact"
+        },
       }
     : undefined;
 
@@ -87,7 +127,7 @@ export const Dashboard = ({ user }: { user?: any }) => {
             <h1 className="text-xl font-bold">Tourist Safety Monitor</h1>
             <p className="text-primary-foreground/80 text-sm">Stay safe, explore confidently</p>
           </div>
-          <Settings currentUser={user} />
+          <Settings currentUser={profile} />
         </div>
       </div>
 
@@ -103,7 +143,7 @@ export const Dashboard = ({ user }: { user?: any }) => {
             <Card className="p-3 text-center">
               <Users className="w-6 h-6 text-primary mx-auto mb-1" />
               <p className="text-xs text-muted-foreground">Group</p>
-              <p className="font-semibold text-sm">{user ? '1 Member' : 'No Group'}</p>
+              <p className="font-semibold text-sm">{profile ? '1 Member' : 'No Group'}</p>
             </Card>
             <Card className="p-3 text-center">
               <Activity className="w-6 h-6 text-secondary mx-auto mb-1" />

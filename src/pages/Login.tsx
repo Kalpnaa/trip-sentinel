@@ -4,17 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Shield, User, Phone, Mail, MapPin, Eye, EyeOff } from "lucide-react";
 
-interface LoginProps {
-  onLogin: (user: any) => void;
-}
-
-export const Login = ({ onLogin }: LoginProps) => {
+export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const { signIn, signUp } = useAuth();
 
   // Login form state
   const [loginForm, setLoginForm] = useState({
@@ -47,32 +43,8 @@ export const Login = ({ onLogin }: LoginProps) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // TODO: Implement actual authentication
-
-    setTimeout(() => {
-      toast({
-        title: "Login Successful",
-        description: "Welcome back to Tourist Safety Monitor!",
-      });
-
-      const key = `profile:${loginForm.email.toLowerCase()}`;
-      const stored = localStorage.getItem(key);
-      
-      if (!stored) {
-        toast({
-          title: "No Profile Found",
-          description: "Please register first to create your profile.",
-          variant: "destructive"
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      const profile = JSON.parse(stored);
-      localStorage.setItem("current-user", JSON.stringify(profile));
-      onLogin(profile);
-      setIsLoading(false);
-    }, 1500);
+    await signIn(loginForm.email, loginForm.password);
+    setIsLoading(false);
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -80,57 +52,31 @@ export const Login = ({ onLogin }: LoginProps) => {
 
     // Password mismatch check
     if (registerForm.password !== registerForm.confirmPassword) {
-      toast({
-        title: "Password Mismatch",
-        description: "Passwords do not match. Please try again.",
-        variant: "destructive"
-      });
       return;
     }
 
     // Validate user phone
     if (!validatePhone(registerForm.phone)) {
-      toast({
-        title: "Invalid Phone Number",
-        description: "Please enter a valid 10-digit phone number for yourself.",
-        variant: "destructive"
-      });
       return;
     }
 
     // Validate emergency contact phone
     if (!validatePhone(registerForm.emergencyContact.phone)) {
-      toast({
-        title: "Invalid Emergency Contact Phone",
-        description: "Please enter a valid 10-digit phone number for your emergency contact.",
-        variant: "destructive"
-      });
       return;
     }
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      toast({
-        title: "Registration Successful",
-        description: "Your account has been created successfully!",
-      });
+    const metadata = {
+      full_name: registerForm.name,
+      phone_number: registerForm.phone,
+      nationality: registerForm.nationality,
+      emergency_contact_name: registerForm.emergencyContact.name,
+      emergency_contact_phone: registerForm.emergencyContact.phone,
+    };
 
-      const userPayload = {
-        id: "user_new",
-        name: registerForm.name,
-        email: registerForm.email,
-        phone: registerForm.phone,
-        nationality: registerForm.nationality,
-        emergencyContact: registerForm.emergencyContact,
-      };
-
-      const key = `profile:${registerForm.email.toLowerCase()}`;
-      localStorage.setItem(key, JSON.stringify(userPayload));
-      localStorage.setItem("current-user", JSON.stringify(userPayload));
-      onLogin(userPayload);
-      setIsLoading(false);
-    }, 2000);
+    await signUp(registerForm.email, registerForm.password, metadata);
+    setIsLoading(false);
   };
 
   return (
