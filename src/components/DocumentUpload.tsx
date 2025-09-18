@@ -81,7 +81,7 @@ export const DocumentUpload = ({ onUploadComplete }: DocumentUploadProps) => {
       // Store KYC data in database
       setUploadProgress(75);
       const { data: kycData, error } = await supabase
-        .from('kyc')
+        .from('kyc' as any)
         .insert({
           user_id: user.id,
           id_type: idType,

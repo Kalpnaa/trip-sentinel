@@ -27,14 +27,14 @@ export const useKYC = () => {
       if (!user?.id) throw new Error('No user');
       
       const { data, error } = await supabase
-        .from('kyc')
+        .from('kyc' as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .maybeSingle();
 
       if (error) throw error;
-      return data as KYCData | null;
+      return data ? (data as unknown as KYCData) : null;
     },
     enabled: !!user?.id,
   });
@@ -58,7 +58,7 @@ export const useKYC = () => {
 
       // Update KYC status
       const { error: kycUpdateError } = await supabase
-        .from('kyc')
+        .from('kyc' as any)
         .update({
           status: 'verified',
           kyc_hash: kycHash,
@@ -75,7 +75,7 @@ export const useKYC = () => {
 
       // Create digital trip ID
       const { data: digitalId, error: digitalIdError } = await supabase
-        .from('digital_trip_ids')
+        .from('digital_trip_ids' as any)
         .insert({
           user_id: user.id,
           trip_id: tripId,
@@ -99,7 +99,7 @@ export const useKYC = () => {
       
       toast({
         title: "Verification Successful",
-        description: `Digital ID created for ${data.tripData.destination} (${data.digitalId.digital_id_number})`,
+        description: `Digital ID created for ${data.tripData.destination} (${(data.digitalId as any).digital_id_number})`,
       });
     },
     onError: (error: any) => {
@@ -128,22 +128,13 @@ export const useDigitalTripIDs = () => {
       if (!user?.id) throw new Error('No user');
       
       const { data, error } = await supabase
-        .from('digital_trip_ids')
-        .select(`
-          *,
-          trips:trip_id (
-            title,
-            destination,
-            start_date,
-            end_date,
-            status
-          )
-        `)
+        .from('digital_trip_ids' as any)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as any[];
     },
     enabled: !!user?.id,
   });

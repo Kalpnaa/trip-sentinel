@@ -14,6 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
+      digital_trip_ids: {
+        Row: {
+          blockchain_tx_hash: string | null
+          created_at: string | null
+          digital_id_number: string | null
+          expiry_date: string | null
+          id: string
+          issued_date: string | null
+          qr_code_url: string | null
+          trip_hash: string | null
+          trip_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          blockchain_tx_hash?: string | null
+          created_at?: string | null
+          digital_id_number?: string | null
+          expiry_date?: string | null
+          id?: string
+          issued_date?: string | null
+          qr_code_url?: string | null
+          trip_hash?: string | null
+          trip_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          blockchain_tx_hash?: string | null
+          created_at?: string | null
+          digital_id_number?: string | null
+          expiry_date?: string | null
+          id?: string
+          issued_date?: string | null
+          qr_code_url?: string | null
+          trip_hash?: string | null
+          trip_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      kyc: {
+        Row: {
+          blockchain_tx_hash: string | null
+          created_at: string | null
+          id: string
+          id_number: string | null
+          id_type: string | null
+          image_url: string | null
+          kyc_hash: string | null
+          selfie_url: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          blockchain_tx_hash?: string | null
+          created_at?: string | null
+          id?: string
+          id_number?: string | null
+          id_type?: string | null
+          image_url?: string | null
+          kyc_hash?: string | null
+          selfie_url?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          blockchain_tx_hash?: string | null
+          created_at?: string | null
+          id?: string
+          id_number?: string | null
+          id_type?: string | null
+          image_url?: string | null
+          kyc_hash?: string | null
+          selfie_url?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      kyc_requests: {
+        Row: {
+          blockchain_tx_hash: string | null
+          created_at: string | null
+          id: string
+          id_number: string | null
+          id_type: string | null
+          image_url: string | null
+          kyc_hash: string | null
+          selfie_url: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          blockchain_tx_hash?: string | null
+          created_at?: string | null
+          id?: string
+          id_number?: string | null
+          id_type?: string | null
+          image_url?: string | null
+          kyc_hash?: string | null
+          selfie_url?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          blockchain_tx_hash?: string | null
+          created_at?: string | null
+          id?: string
+          id_number?: string | null
+          id_type?: string | null
+          image_url?: string | null
+          kyc_hash?: string | null
+          selfie_url?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       location_logs: {
         Row: {
           accuracy: number | null
@@ -167,6 +284,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      "storage.objects": {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
       }
       trip_activities: {
         Row: {
