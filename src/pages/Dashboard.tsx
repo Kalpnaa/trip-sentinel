@@ -8,6 +8,7 @@ import { LocationStatus } from "@/components/LocationStatus";
 import { DigitalID } from "@/components/DigitalID";
 import { TripItinerary } from "@/components/TripItinerary";
 import { Settings } from "@/components/Settings";
+import { BlockchainVerification } from "@/components/BlockchainVerification";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -185,7 +186,7 @@ export const Dashboard = () => {
 
         {/* Main Tabs */}
         <Tabs defaultValue="location" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="location" className="flex items-center gap-1">
               <MapPin className="w-4 h-4" />
               <span className="hidden sm:inline">Location</span>
@@ -197,6 +198,10 @@ export const Dashboard = () => {
             <TabsTrigger value="id" className="flex items-center gap-1">
               <User className="w-4 h-4" />
               <span className="hidden sm:inline">Digital ID</span>
+            </TabsTrigger>
+            <TabsTrigger value="verify" className="flex items-center gap-1">
+              <Shield className="w-4 h-4" />
+              <span className="hidden sm:inline">Verify</span>
             </TabsTrigger>
             <TabsTrigger value="reports" className="flex items-center gap-1">
               <FileText className="w-4 h-4" />
@@ -214,6 +219,10 @@ export const Dashboard = () => {
 
           <TabsContent value="id">
             <DigitalID user={userForID} />
+          </TabsContent>
+
+          <TabsContent value="verify">
+            <BlockchainVerification />
           </TabsContent>
 
           <TabsContent value="reports">

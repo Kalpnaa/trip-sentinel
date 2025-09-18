@@ -36,11 +36,8 @@ export const DigitalID = ({ user }: DigitalIDProps) => {
   }
 
   const verifyIdentity = () => {
-    // TODO: Implement blockchain verification
-    // - Connect to Hyperledger/Ethereum private chain
-    // - Verify digital signature
-    // - Check against trusted issuer
-    console.log("Verifying digital identity...");
+    // Redirect to blockchain verification component
+    window.location.hash = '#verify-blockchain';
   };
 
   return (
