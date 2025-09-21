@@ -9,6 +9,7 @@ import { DigitalID } from "@/components/DigitalID";
 import { TripItinerary } from "@/components/TripItinerary";
 import { Settings } from "@/components/Settings";
 import { BlockchainVerification } from "@/components/BlockchainVerification";
+import { TripCreator } from "@/components/TripCreator";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -68,7 +69,17 @@ export const Dashboard = () => {
 
     syncFromHash();
     window.addEventListener('hashchange', syncFromHash);
-    return () => window.removeEventListener('hashchange', syncFromHash);
+    
+    // Listen for tab navigation events
+    const handleTabNavigation = (event: any) => {
+      setActiveTab(event.detail);
+    };
+    window.addEventListener('navigate-to-tab', handleTabNavigation);
+    
+    return () => {
+      window.removeEventListener('hashchange', syncFromHash);
+      window.removeEventListener('navigate-to-tab', handleTabNavigation);
+    };
   }, []);
 
   const fetchUserData = async () => {
@@ -241,7 +252,10 @@ export const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="itinerary">
-            <TripItinerary onItineraryUpdate={handleItineraryUpdate} />
+            <div className="space-y-6">
+              <TripCreator onTripCreated={fetchUserData} />
+              <TripItinerary onItineraryUpdate={handleItineraryUpdate} />
+            </div>
           </TabsContent>
 
           <TabsContent value="id">

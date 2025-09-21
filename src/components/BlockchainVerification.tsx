@@ -154,9 +154,9 @@ export const BlockchainVerification = () => {
               </p>
               <Button 
                 onClick={() => {
-                  // Navigate to itinerary tab to create a trip
-                  const itineraryTab = document.querySelector('[value="itinerary"]') as HTMLElement;
-                  if (itineraryTab) itineraryTab.click();
+                  // Use the proper tab navigation system
+                  const event = new CustomEvent('navigate-to-tab', { detail: 'itinerary' });
+                  window.dispatchEvent(event);
                 }}
                 variant="outline"
               >
