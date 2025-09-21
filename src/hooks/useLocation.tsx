@@ -33,21 +33,28 @@ export const useLocation = () => {
     }
 
     let watchId: number;
+    let lastUpdateTime = 0;
+    const UPDATE_THRESHOLD = 30000; // 30 seconds minimum between updates
 
     const startTracking = () => {
       watchId = navigator.geolocation.watchPosition(
         (position) => {
-          setCurrentLocation(position);
-          setLocationError(null);
+          const now = Date.now();
+          // Only update if enough time has passed or position changed significantly
+          if (now - lastUpdateTime >= UPDATE_THRESHOLD) {
+            setCurrentLocation(position);
+            setLocationError(null);
+            lastUpdateTime = now;
+          }
         },
         (error) => {
           setLocationError(error.message);
           console.error('Location error:', error);
         },
         {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 60000, // 1 minute
+          enableHighAccuracy: false, // Reduce accuracy for better battery life
+          timeout: 15000,
+          maximumAge: 300000, // 5 minutes - cache location longer
         }
       );
       setIsTracking(true);

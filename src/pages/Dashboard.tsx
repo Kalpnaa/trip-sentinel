@@ -101,8 +101,16 @@ export const Dashboard = () => {
 
   const handleLocationUpdate = (location: LocationData) => {
     setCurrentLocation(location);
-    // TODO: Send to backend API for geo-fencing checks
-    console.log("Location updated:", location);
+    // Only log significant location changes to reduce noise
+    if (!currentLocation || 
+        Math.abs(currentLocation.latitude - location.latitude) > 0.001 ||
+        Math.abs(currentLocation.longitude - location.longitude) > 0.001) {
+      console.log("Significant location change:", {
+        lat: location.latitude.toFixed(6),
+        lng: location.longitude.toFixed(6),
+        accuracy: location.accuracy
+      });
+    }
   };
 
   const handleSOSActivated = () => {

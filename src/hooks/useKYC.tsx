@@ -129,7 +129,16 @@ export const useDigitalTripIDs = () => {
       
       const { data, error } = await supabase
         .from('digital_trip_ids' as any)
-        .select('*')
+        .select(`
+          *,
+          trips:trip_id (
+            id,
+            title,
+            destination,
+            start_date,
+            end_date
+          )
+        `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
