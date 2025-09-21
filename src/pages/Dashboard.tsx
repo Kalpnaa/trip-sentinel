@@ -48,12 +48,28 @@ export const Dashboard = () => {
   const [itinerary, setItinerary] = useState<ItineraryItem[]>([]);
   const [safetyAlerts, setSafetyAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<string>('location');
 
   useEffect(() => {
     if (user) {
       fetchUserData();
     }
   }, [user]);
+
+  // Sync tab with URL hash (e.g., #verify-blockchain)
+  useEffect(() => {
+    const syncFromHash = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash.includes('verify')) setActiveTab('verify');
+      else if (hash.includes('itinerary')) setActiveTab('itinerary');
+      else if (hash.includes('id')) setActiveTab('id');
+      else if (hash.includes('location')) setActiveTab('location');
+    };
+
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+    return () => window.removeEventListener('hashchange', syncFromHash);
+  }, []);
 
   const fetchUserData = async () => {
     try {
@@ -193,7 +209,10 @@ export const Dashboard = () => {
         </div>
 
         {/* Main Tabs */}
-        <Tabs defaultValue="location" className="space-y-4">
+        <Tabs value={activeTab} onValueChange={(v) => {
+            setActiveTab(v);
+            window.location.hash = v === 'verify' ? 'verify-blockchain' : v;
+          }} className="space-y-4">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="location" className="flex items-center gap-1">
               <MapPin className="w-4 h-4" />
