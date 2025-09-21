@@ -141,55 +141,76 @@ export const BlockchainVerification = () => {
         <DocumentUpload onUploadComplete={handleDocumentUpload} />
       )}
 
-      {kycData && kycData.status === 'pending' && eligibleTrips.length > 0 && (
+      {kycData && kycData.status === 'pending' && (
         <Card className="p-4">
           <h3 className="text-lg font-semibold mb-4">Create Digital Travel ID</h3>
           
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">
-                Select Trip for Digital ID
-              </label>
-              <Select value={selectedTripId} onValueChange={setSelectedTripId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a trip" />
-                </SelectTrigger>
-                <SelectContent>
-                  {eligibleTrips.map((trip) => (
-                    <SelectItem key={trip.id} value={trip.id}>
-                      {trip.title} - {trip.destination} 
-                      ({new Date(trip.start_date).toLocaleDateString()})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          {eligibleTrips.length === 0 ? (
+            <div className="text-center py-6">
+              <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <h4 className="font-medium mb-2">No Trips Available</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                You need to create a trip first to generate a digital travel ID.
+              </p>
+              <Button 
+                onClick={() => {
+                  // Navigate to itinerary tab to create a trip
+                  const itineraryTab = document.querySelector('[value="itinerary"]') as HTMLElement;
+                  if (itineraryTab) itineraryTab.click();
+                }}
+                variant="outline"
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Create a Trip
+              </Button>
             </div>
-
-            {verificationStep === 2 && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Verification Progress</label>
-                <Progress value={isVerifying ? 50 : 100} className="w-full" />
-                <p className="text-sm text-muted-foreground">
-                  {isVerifying ? 'Verifying on blockchain...' : 'Verification complete'}
-                </p>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">
+                  Select Trip for Digital ID
+                </label>
+                <Select value={selectedTripId} onValueChange={setSelectedTripId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a trip" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {eligibleTrips.map((trip) => (
+                      <SelectItem key={trip.id} value={trip.id}>
+                        {trip.title} - {trip.destination} 
+                        ({new Date(trip.start_date).toLocaleDateString()})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            )}
 
-            <Button 
-              onClick={handleVerifyIdentity}
-              disabled={!selectedTripId || isVerifying}
-              className="w-full"
-            >
-              {isVerifying ? (
-                <>Verifying on Blockchain...</>
-              ) : (
-                <>
-                  <Shield className="w-4 h-4 mr-2" />
-                  Verify Identity & Create Digital ID
-                </>
+              {verificationStep === 2 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Verification Progress</label>
+                  <Progress value={isVerifying ? 50 : 100} className="w-full" />
+                  <p className="text-sm text-muted-foreground">
+                    {isVerifying ? 'Verifying on blockchain...' : 'Verification complete'}
+                  </p>
+                </div>
               )}
-            </Button>
-          </div>
+
+              <Button 
+                onClick={handleVerifyIdentity}
+                disabled={!selectedTripId || isVerifying}
+                className="w-full"
+              >
+                {isVerifying ? (
+                  <>Verifying on Blockchain...</>
+                ) : (
+                  <>
+                    <Shield className="w-4 h-4 mr-2" />
+                    Verify Identity & Create Digital ID
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
         </Card>
       )}
 
