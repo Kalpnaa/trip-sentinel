@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { DocumentUpload } from './DocumentUpload';
 import { useKYC, useDigitalTripIDs } from '@/hooks/useKYC';
 import { useTrips } from '@/hooks/useTrips';
@@ -17,6 +18,8 @@ export const BlockchainVerification = () => {
   const { profile } = useProfile();
   const [selectedTripId, setSelectedTripId] = useState('');
   const [verificationStep, setVerificationStep] = useState(0);
+  const [qrOpen, setQrOpen] = useState(false);
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
 
   // Filter active/planned trips
   const eligibleTrips = trips.filter(trip => 
@@ -129,7 +132,7 @@ export const BlockchainVerification = () => {
                     size="sm" 
                     variant="outline" 
                     className="mt-2"
-                    onClick={() => window.open(digitalId.qr_code_url, '_blank')}
+                    onClick={() => { setQrUrl(digitalId.qr_code_url); setQrOpen(true); }}
                   >
                     <QrCode className="w-4 h-4 mr-2" />
                     View QR Code
@@ -233,6 +236,39 @@ export const BlockchainVerification = () => {
           </div>
         </Card>
       )}
+
+      {/* QR Dialog */}
+      <Dialog open={qrOpen} onOpenChange={setQrOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Digital Travel ID QR</DialogTitle>
+            <DialogDescription>Scan to verify your travel ID</DialogDescription>
+          </DialogHeader>
+          {qrUrl && (
+            <div className="flex flex-col items-center gap-3">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(qrUrl)}`}
+                alt="Digital travel ID QR code"
+                loading="lazy"
+                className="rounded-md"
+              />
+              <div className="flex gap-2">
+                <Button variant="outline" asChild>
+                  <a href={qrUrl} target="_blank" rel="noopener noreferrer">Open link</a>
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={async () => {
+                    try { if (qrUrl) await navigator.clipboard.writeText(qrUrl); } catch {}
+                  }}
+                >
+                  Copy link
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
