@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Settings as SettingsIcon, Plus, Trash2, Phone, User, Globe, Bell, Shield, LogOut } from "lucide-react";
 
 interface EmergencyContact {
@@ -36,6 +37,7 @@ const LANGUAGES = [
 
 export const Settings = ({ currentUser }: { currentUser?: { name?: string; email?: string } }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
   const [settings, setSettings] = useState<UserSettings>({
     language: 'en',
     notifications: true,
@@ -103,12 +105,13 @@ export const Settings = ({ currentUser }: { currentUser?: { name?: string; email
     const updatedSettings = { ...settings, [key]: value };
     saveSettings(updatedSettings);
     
-    // Show specific feedback for language changes
+    // Update language in context when language setting changes
     if (key === 'language') {
+      setLanguage(value);
       const languageName = LANGUAGES.find(lang => lang.code === value)?.name || value;
       toast({
-        title: "Language Updated",
-        description: `Language changed to ${languageName}`,
+        title: t('languageUpdated') || "Language Updated",
+        description: `${t('languageChangedTo') || 'Language changed to'} ${languageName}`,
       });
     }
   };
@@ -130,10 +133,10 @@ export const Settings = ({ currentUser }: { currentUser?: { name?: string; email
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <SettingsIcon className="w-5 h-5" />
-            Settings
+            {t('settings')}
           </SheetTitle>
           <SheetDescription>
-            Manage your safety preferences and emergency contacts
+            {t('managePreferences') || 'Manage your safety preferences and emergency contacts'}
           </SheetDescription>
         </SheetHeader>
 
@@ -166,9 +169,9 @@ export const Settings = ({ currentUser }: { currentUser?: { name?: string; email
               Language & Region
             </h3>
             <div className="space-y-2">
-              <Label htmlFor="language">Preferred Language</Label>
+              <Label htmlFor="language">{t('preferredLanguage')}</Label>
               <Select
-                value={settings.language}
+                value={language}
                 onValueChange={(value) => updateSetting('language', value)}
               >
                 <SelectTrigger>

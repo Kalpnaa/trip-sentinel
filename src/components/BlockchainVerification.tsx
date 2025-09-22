@@ -9,6 +9,7 @@ import { DocumentUpload } from './DocumentUpload';
 import { useKYC, useDigitalTripIDs } from '@/hooks/useKYC';
 import { useTrips } from '@/hooks/useTrips';
 import { useProfile } from '@/hooks/useProfile';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Shield, CheckCircle, Clock, AlertCircle, QrCode, Calendar, MapPin } from 'lucide-react';
 
 export const BlockchainVerification = () => {
@@ -16,6 +17,7 @@ export const BlockchainVerification = () => {
   const { digitalTripIDs } = useDigitalTripIDs();
   const { trips } = useTrips();
   const { profile } = useProfile();
+  const { t } = useLanguage();
   const [selectedTripId, setSelectedTripId] = useState('');
   const [verificationStep, setVerificationStep] = useState(0);
   const [qrOpen, setQrOpen] = useState(false);
@@ -67,7 +69,7 @@ export const BlockchainVerification = () => {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Shield className="w-5 h-5" />
-              Identity Verification Status
+              {t('identityVerificationStatus')}
             </h3>
             <Badge className={getStatusColor(kycData.status)}>
               {getStatusIcon(kycData.status)}
@@ -76,19 +78,19 @@ export const BlockchainVerification = () => {
           </div>
           
           <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Document Type</p>
-              <p className="font-medium">{kycData.id_type.replace('_', ' ').toUpperCase()}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Document Number</p>
-              <p className="font-mono">{kycData.id_number}</p>
-            </div>
+              <div>
+                <p className="text-muted-foreground">{t('documentType')}</p>
+                <p className="font-medium">{kycData.id_type.replace('_', ' ').toUpperCase()}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">{t('documentNumber')}</p>
+                <p className="font-mono">{kycData.id_number}</p>
+              </div>
           </div>
 
           {kycData.blockchain_tx_hash && (
             <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-              <p className="text-sm text-muted-foreground">Blockchain Transaction</p>
+              <p className="text-sm text-muted-foreground">{t('blockchainTransaction')}</p>
               <p className="font-mono text-xs break-all">{kycData.blockchain_tx_hash}</p>
             </div>
           )}
@@ -100,7 +102,7 @@ export const BlockchainVerification = () => {
         <Card className="p-4">
           <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
             <QrCode className="w-5 h-5" />
-            Your Digital Travel IDs
+            {t('yourDigitalTravelIds')}
           </h3>
           
           <div className="space-y-3">
@@ -135,7 +137,7 @@ export const BlockchainVerification = () => {
                     onClick={() => { setQrUrl(digitalId.qr_code_url); setQrOpen(true); }}
                   >
                     <QrCode className="w-4 h-4 mr-2" />
-                    View QR Code
+                    {t('viewQrCode')}
                   </Button>
                 )}
               </div>
