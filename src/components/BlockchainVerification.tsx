@@ -125,7 +125,12 @@ export const BlockchainVerification = () => {
                 </div>
 
                 {digitalId.qr_code_url && (
-                  <Button size="sm" variant="outline" className="mt-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="mt-2"
+                    onClick={() => window.open(digitalId.qr_code_url, '_blank')}
+                  >
                     <QrCode className="w-4 h-4 mr-2" />
                     View QR Code
                   </Button>

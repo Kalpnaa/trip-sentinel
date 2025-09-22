@@ -102,6 +102,15 @@ export const Settings = ({ currentUser }: { currentUser?: { name?: string; email
   const updateSetting = (key: keyof UserSettings, value: any) => {
     const updatedSettings = { ...settings, [key]: value };
     saveSettings(updatedSettings);
+    
+    // Show specific feedback for language changes
+    if (key === 'language') {
+      const languageName = LANGUAGES.find(lang => lang.code === value)?.name || value;
+      toast({
+        title: "Language Updated",
+        description: `Language changed to ${languageName}`,
+      });
+    }
   };
 
   const handleLogout = () => {
